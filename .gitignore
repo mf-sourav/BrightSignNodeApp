@@ -32,6 +32,7 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 dist/
+www/media
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -50,6 +51,7 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
+*.zip
 
 # Yarn Integrity file
 .yarn-integrity

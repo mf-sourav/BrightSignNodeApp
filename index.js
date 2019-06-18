@@ -18,6 +18,8 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var jsonParser = bodyParser.json();
 var http = require('http');
+const request = require('request');
+var testresponse = null;
 
 /**
  *  @function main
@@ -55,7 +57,8 @@ app.post('/updateConfig',jsonParser, function (req, res) {
   console.log(req.body);
   fs.writeFileSync('./www/config.txt', JSON.stringify(req.body));
   readConfig();
-  res.send(configData);
+  //res.send(configData);
+  res.send(testresponse);
 });
 
 /**
@@ -96,3 +99,12 @@ var download = function(url, dest, cb) {
     });
   });
 }
+
+request('https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&vfk=c7d93938-a5bf-41&k=c84345d2-146e-4b&count=300&ran=466&time=06182019130109', (err, res, body) => {
+  if (err) {
+    return console.log(err);
+  }
+  console.log(body);
+  data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
+  testresponse = JSON.parse(data);
+});
