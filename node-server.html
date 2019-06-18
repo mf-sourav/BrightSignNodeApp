@@ -1,0 +1,24 @@
+<!--
+  File-node-server.html
+  author-sourav chatterjee
+  summary-entry point for index,js
+-->
+<html>
+
+<head>
+  <script src='./bundle.js'></script>
+</head>
+
+<body style='background-color:blue' onload='window.main()'>
+  <h1>
+    Loading Almo Insteo Bright sign App.....
+  </h1>
+</body>
+<script>
+  var localHostAddress = window.location.hostname;
+  setTimeout(function () {
+    window.location='http://'+window.getIp()+':9090/';
+  }, 3000)
+</script>
+
+</html>
