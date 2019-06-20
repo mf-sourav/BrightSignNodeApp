@@ -22,16 +22,44 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h1>Configure your device</h1>
-                <hr>
-                <label>Password:</label><input id="pass" type="text"/><br><br>
-                <label>Screen ID:</label><input id="screenid" type="text"/><br>
-                <hr>
-                <button onclick="checkPin()">submit</button><br>
-                <label id="modalErr" style="color: red"></label>
+                <table>
+                    <tr>
+                        <td><label>Password:</label></td>
+                        <td><input id="pass" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Screen ID:</label></td>
+                        <td><input id="screenid" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>VFK :</label></td>
+                        <td><input id="vfkid" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>K :</label></td>
+                        <td><input id="kid" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Device type:</label></td>
+                        <td><input type="radio" id="mode" value="screen" name="mode" checked>Screen
+                            <input type="radio" id="mode" value="media" name="mode">Media
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <button onclick="checkPin()">submit</button><br></td>
+                        <td> <label id="modalErr" style="color: red"></label></td>
+                    </tr>
+                </table>
             </div>
-
         </div>
-        <iframe id='ifr' src='' height="100%" width="100%">
+        <!--screen mode-->
+        <iframe id='ifr' src='' height="100%" width="100%"></iframe>
+        <!--mediam mode-->
+        <div id="gallery">
+            <img id="loading" class="loading" src="images/loading.gif"/>
+            <img id="gallery-image" width="1920px" src=""/>
+            <video id="gallery-video" width="1920px" src="" autoplay muted></video>
+        </div>
     </div>
 </body>
 

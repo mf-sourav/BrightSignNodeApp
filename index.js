@@ -20,7 +20,7 @@ var jsonParser = bodyParser.json();
 var http = require('http');
 const request = require('request');
 var testresponse = null;
-
+//insteo api
 var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&'
 var vfk = 'c7d93938-a5bf-41';
 var k = 'c84345d2-146e-4b';

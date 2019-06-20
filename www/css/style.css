@@ -1,93 +1,127 @@
-body{
-    overflow: hidden;
-    margin: 0px;
-    padding: 0px;
+body {
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
 }
+
 .container {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    top:0;
-    background-color: white;
-    width: 1920px;
-    height: 1080px;
-    overflow: hidden;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  background-color: white;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
 }
+
 #ifr {
-    border-width: 0px;
-    position: absolute;
-    top:0px;
-    left: 0px;
-    height: 1080px;
-    width: 1920px;
-    z-index: 1;
-    display: none;
+  border-width: 0px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 1080px;
+  width: 1920px;
+  z-index: 1;
+  display: none;
 }
+
 .logo {
-    position: absolute;
-    top: 20%;
-    left: 39%;
-    height: 500px;
-    width: 500px;
-    z-index: 0;
+  position: absolute;
+  top: 20%;
+  left: 39%;
+  height: 500px;
+  width: 500px;
+  z-index: 0;
 }
+
 .loading {
-    position: absolute;
-    top: 70%;
-    left: 46%;
-    height: 200px;
-    width: 200px;
-    z-index: 0;
+  position: absolute;
+  top: 65%;
+  left: 45%;
+  height: 200px;
+  width: 200px;
+  z-index: 0;
 }
+
 /* The Modal (background) */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-  
-  /* Modal Content */
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-    font-size: 2em;
-    border-radius: 15px;
-  }
-  .modal-content label{
-    font-size: 1.5em;
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
 
-  }
-  .modal-content input{
-    font-size: 1.5em;
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  font-size: 2em;
+  border-radius: 15px;
+}
 
-  }
-  .modal-content button{
-    font-size: 1.5em;
+.modal-content label {
+  font-size: 1.5em;
 
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 32px;
-    font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
+}
+
+.modal-content input {
+  font-size: 1.5em;
+
+}
+
+.modal-content button {
+  font-size: 1.5em;
+
+}
+
+input[type=radio] {
+  border: 0px;
+  width: 9%;
+  height: .7em;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+/*gallery*/
+#gallery{
+  background-color: black;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 1080px;
+  width: 1920px;
+  z-index: 1;
+  display: none;
+}
