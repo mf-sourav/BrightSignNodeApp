@@ -48,7 +48,7 @@ function init() {
           setInterval(function(){
             clearTimeout(mediaTimer);
             getMediaList();
-          },900000);
+          },300000);
           //getMediaList();
         } else {
           openModal();
