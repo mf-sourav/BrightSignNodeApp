@@ -22,8 +22,8 @@ const request = require('request');
 var testresponse = null;
 //insteo api
 var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&'
-var vfk = 'c7d93938-a5bf-41';
-var k = 'c84345d2-146e-4b';
+var vfk = '';
+var k = '';
 
 /**
  *  @function main
@@ -38,7 +38,7 @@ function main() {
   app.use(express.static('www'));
   app.listen(9090, function () {
     console.log('app listening on port 9090!');
-    downloadMedia();
+    readConfig();
   });
 }
 
@@ -58,6 +58,7 @@ app.get('/test', function (req, res) {
  *  @returns medialist array
  */
 app.get('/getMedia', function (req, res) {
+  downloadMedia();
   res.send(readMediaList());
 });
 
@@ -94,6 +95,8 @@ function readConfig(){
   try {
     rawdata = fs.readFileSync('./www/config.txt');
     configData = JSON.parse(rawdata);
+    vfk = configData.vfk;
+    k = configData.k;
     console.log(configData);
   } catch (e) {
     console.log('fs err')
@@ -128,22 +131,20 @@ function download(url, dest, cb) {
  *  @returns void
  */
 function downloadMedia() {
-  request(mediaApiUrl+'vfk='+vfk+'&k='+k+'&count=300&ran=466&time='+Math.floor(Date.now() / 1000), (err, res, body) => {
+  request(mediaApiUrl + 'vfk=' + vfk + '&k=' + k + '&count=300&ran=466&time=' + Math.floor(Date.now() / 1000), (err, res, body) => {
     if (err) {
-      return console.log(err);
+      return console.log('offline');
     }
     console.log(body);
-    data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
-    data = JSON.parse(data);
-    //items = data[0].results;
-    items = [{"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985856/LandscapeHD1-o_A7jVGP.jpg" , "image-contentID": "35167" }, 
-    {"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985876/LandscapeHD2-o_oMaRzN.jpg" , "image-contentID": "35168" },
-    {"image": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" , "image-contentID": "35169" } ];
-    
+    try {
+      data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
+      data = JSON.parse(data);
+      items = data[0].results;
+    } catch (e) {console.log('api error');}
     for (i = 0; i < items.length; i++) {
       console.log(items[i].image);
       fileName = getFileName(items[i].image);
-      download(items[i].image, './www/media/' + fileName,postDownload);
+      download(items[i].image, './www/media/' + fileName, postDownload);
     }
   });
 }

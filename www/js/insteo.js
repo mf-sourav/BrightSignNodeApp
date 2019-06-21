@@ -44,8 +44,13 @@ function init() {
       } else {
         if (configData.vfk != '') {
           gallery.style.display = "block";
-          getMediaList();
-        }else{
+          setTimeout(getMediaList);
+          setInterval(function(){
+            clearTimeout(mediaTimer);
+            getMediaList();
+          },900000);
+          //getMediaList();
+        } else {
           openModal();
         }
       }
@@ -188,6 +193,8 @@ function getMediaList() {
       if (mediaListArray.length > 1) {
         //gallery.innerHTML = "";
         document.querySelector("#loading").style.display = 'none';
+        document.querySelector("#gallery-video").src = "";
+        document.querySelector("#gallery-image").src = ""
         nextMedia();
       } else {
         setTimeout(getMediaList, 10000);

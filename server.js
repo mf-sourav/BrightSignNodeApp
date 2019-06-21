@@ -6,8 +6,10 @@ const fs = require('fs');
 var configData = null;
 var bodyParser = require('body-parser');
 var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&'
-var vfk = 'c7d93938-a5bf-41';
-var k = 'c84345d2-146e-4b';
+//var vfk = 'c7d93938-a5bf-41';
+//var k = 'c84345d2-146e-4b';
+var vfk = '';
+var k = '';
 var urlencodedParser = bodyParser.urlencoded({
   extended: false
 })
@@ -18,6 +20,8 @@ function readConfig() {
   try {
     rawdata = fs.readFileSync('./www/config.txt');
     configData = JSON.parse(rawdata);
+    vfk = configData.vfk;
+    k = configData.k;
     console.log(configData);
   } catch (e) {
     console.log('fs err')
@@ -26,7 +30,7 @@ function readConfig() {
 
 function readMediaList() {
   try {
-    rawdata = fs.readFileSync('./www/medialist.txt','utf8');
+    rawdata = fs.readFileSync('./www/medialist.txt', 'utf8');
     mediaList = rawdata.split('\n');
     return mediaList;
   } catch (e) {
@@ -36,7 +40,7 @@ function readMediaList() {
 
 app.listen(9090, function () {
   console.log('Example app listening on port 9090!');
-  downloadMedia();
+  readConfig();
 });
 
 app.get('/test', function (req, res) {
@@ -45,6 +49,7 @@ app.get('/test', function (req, res) {
 });
 
 app.get('/getMedia', function (req, res) {
+  downloadMedia();
   res.send(readMediaList());
 });
 
@@ -66,22 +71,26 @@ var download = function (url, dest, cb) {
 }
 
 function downloadMedia() {
-  request(mediaApiUrl+'vfk='+vfk+'&k='+k+'&count=300&ran=466&time='+Math.floor(Date.now() / 1000), (err, res, body) => {
+  request(mediaApiUrl + 'vfk=' + vfk + '&k=' + k + '&count=300&ran=466&time=' + Math.floor(Date.now() / 1000), (err, res, body) => {
     if (err) {
-      return console.log(err);
+      return console.log('offline');
     }
     console.log(body);
-    data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
-    data = JSON.parse(data);
-    //items = data[0].results;
-    items = [{"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985856/LandscapeHD1-o_A7jVGP.jpg" , "image-contentID": "35167" }, 
-    {"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985876/LandscapeHD2-o_oMaRzN.jpg" , "image-contentID": "35168" },
-    {"image": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" , "image-contentID": "35169" } ];
-    
+    try {
+      data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
+      data = JSON.parse(data);
+      items = data[0].results;
+    } catch (e) {
+
+    }
+    // items = [{"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985856/LandscapeHD1-o_A7jVGP.jpg" , "image-contentID": "35167" }, 
+    // {"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985876/LandscapeHD2-o_oMaRzN.jpg" , "image-contentID": "35168" },
+    // {"image": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" , "image-contentID": "35169" } ];
+
     for (i = 0; i < items.length; i++) {
       console.log(items[i].image);
       fileName = getFileName(items[i].image);
-      download(items[i].image, './www/media/' + fileName,postDownload);
+      download(items[i].image, './www/media/' + fileName, postDownload);
     }
   });
 }
@@ -90,14 +99,14 @@ function downloadMedia() {
 function getFileName(url) {
   return (url.substring(url.lastIndexOf('/') + 1));
 }
-function postDownload(file){
+
+function postDownload(file) {
   fileName = getFileName(file);
   mediaList = readMediaList();
-  if(!mediaList.includes(fileName)){
+  if (!mediaList.includes(fileName)) {
     console.log('not present')
     fs.appendFileSync('./www/medialist.txt', fileName + '\n');
-  }
-  else{
+  } else {
     console.log('exists')
   }
 }
