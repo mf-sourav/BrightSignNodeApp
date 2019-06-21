@@ -57,7 +57,7 @@ function init() {
 
     }
   };
-  xhttp.open("GET", localHostAddress + "test", true);
+  xhttp.open("GET", localHostAddress + "getConfig", true);
   xhttp.send();
 }
 

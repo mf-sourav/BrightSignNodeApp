@@ -43,7 +43,7 @@ app.listen(9090, function () {
   readConfig();
 });
 
-app.get('/test', function (req, res) {
+app.get('/getConfig', function (req, res) {
   readConfig();
   res.send(configData);
 });
@@ -95,7 +95,6 @@ function downloadMedia() {
   });
 }
 
-//download('http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985856/LandscapeHD1-o_A7jVGP.jpg','./www/media/test1.jpg');
 function getFileName(url) {
   return (url.substring(url.lastIndexOf('/') + 1));
 }

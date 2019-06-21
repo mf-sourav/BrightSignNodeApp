@@ -19,7 +19,6 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var jsonParser = bodyParser.json();
 var http = require('http');
 const request = require('request');
-var testresponse = null;
 //insteo api
 var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&'
 var vfk = '';
@@ -43,11 +42,11 @@ function main() {
 }
 
 /**
- *  @route /test
+ *  @route /getConfig
  *  @method GET
  *  @returns config data
  */
-app.get('/test', function (req, res) {
+app.get('/getConfig', function (req, res) {
   readConfig();
   res.send(configData);
 });
@@ -72,7 +71,7 @@ app.post('/updateConfig',jsonParser, function (req, res) {
   fs.writeFileSync('./www/config.txt', JSON.stringify(req.body));
   readConfig();
   //res.send(configData);
-  res.send(testresponse);
+  res.send(configData);
 });
 
 /**
@@ -140,7 +139,9 @@ function downloadMedia() {
       data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
       data = JSON.parse(data);
       items = data[0].results;
-    } catch (e) {console.log('api error');}
+    } catch (e) {
+      console.log('api error');
+    }
     for (i = 0; i < items.length; i++) {
       console.log(items[i].image);
       fileName = getFileName(items[i].image);
