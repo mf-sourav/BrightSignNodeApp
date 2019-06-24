@@ -81,7 +81,7 @@ function downloadMedia() {
       data = JSON.parse(data);
       items = data[0].results;
     } catch (e) {
-
+      return false;
     }
     // items = [{"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985856/LandscapeHD1-o_A7jVGP.jpg" , "image-contentID": "35167" }, 
     // {"image": "http://res.cloudinary.com/insteo/image/upload/a_exif/v1520985876/LandscapeHD2-o_oMaRzN.jpg" , "image-contentID": "35168" },

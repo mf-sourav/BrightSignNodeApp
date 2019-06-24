@@ -26,9 +26,12 @@ var mediaTimer = null;
 function init() {
   console.log('init');
   setModal();
+  openModalListner();
+
   iframe = document.getElementById('ifr');
   gallery = document.getElementById('gallery');
   document.getElementById('gallery-video').addEventListener('ended', videoEndHandler, false);
+
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
@@ -45,10 +48,10 @@ function init() {
         if (configData.vfk != '') {
           gallery.style.display = "block";
           setTimeout(getMediaList);
-          setInterval(function(){
+          setInterval(function () {
             clearTimeout(mediaTimer);
             getMediaList();
-          },300000);
+          }, 300000);
           //getMediaList();
         } else {
           openModal();
@@ -69,7 +72,17 @@ function init() {
  */
 function checkPin() {
   var password = document.getElementById("pass").value;
+  var newPassword = document.getElementById("newpass").value;
   if (password == configData.pass) {
+    //check for new pass
+    if(newPassword != ''){
+      if (newPassword.length >= 5) {
+        configData.pass = newPassword;
+      }else{
+        document.getElementById("modalErr").innerHTML = "invalid new password/leave blank to use old";
+        return false;
+      }
+    }
     changeScreenUrl();
   } else {
     document.getElementById("pass").value = '';
@@ -242,4 +255,13 @@ function videoEndHandler(e) {
   // What you want to do after the event
   mediaCounter++;
   nextMedia();
+}
+
+function openModalListner() {
+  document.addEventListener('keydown', function (event) {
+    if (event.ctrlKey && event.key === 'c') {
+      event.preventDefault();
+      openModal();
+    }
+  });
 }
