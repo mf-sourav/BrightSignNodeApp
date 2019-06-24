@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "run": "node server.js",
+    "build": "npx webpack --mode production"
+  },
   "keywords": [],
   "author": "support@brightsign.biz (http://www.brightsign.biz/)",
   "license": "MIT",
