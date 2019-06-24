@@ -230,13 +230,13 @@ function nextMedia() {
     nextMedia();
     return false
   }
-  if (ext == 'jpg') {
+  if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif') {
     //gallery.innerHTML = "<img src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-image").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-video").src = "";
     mediaTimer = setTimeout(nextMedia, 10000);
   }
-  if (ext == 'mp4') {
+  if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
     //gallery.innerHTML = "<video width='1920px' autoplay src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-video").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-image").src = ""

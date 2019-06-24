@@ -4,6 +4,8 @@
  *  @copyright Almo Insteo 2019
  *  @summary
  *    creates local server for brightsign nodejs app
+ *    display user screen with id
+ *    download manages & plays media files
  */
 
 //all dependencies initialization
@@ -23,7 +25,11 @@ const request = require('request');
 var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&'
 var vfk = '';
 var k = '';
-
+//player config
+const PLAYER_PORT = 9090;
+const PLAYER_CONFIG_PATH = './www/config.txt';
+const PLAYER_MEDIA_PATH = './www/media/';
+const PLAYER_MEDIALIST_PATH = './www/medialist.txt';
 /**
  *  @function main
  *  @summary
@@ -35,7 +41,7 @@ var k = '';
 function main() {
   process.chdir('/storage/sd');
   app.use(express.static('www'));
-  app.listen(9090, function () {
+  app.listen(PLAYER_PORT, function () {
     console.log('app listening on port 9090!');
     readConfig();
   });
@@ -68,7 +74,7 @@ app.get('/getMedia', function (req, res) {
  */
 app.post('/updateConfig',jsonParser, function (req, res) {
   console.log(req.body);
-  fs.writeFileSync('./www/config.txt', JSON.stringify(req.body));
+  fs.writeFileSync(PLAYER_CONFIG_PATH, JSON.stringify(req.body));
   readConfig();
   //res.send(configData);
   res.send(configData);
@@ -92,7 +98,7 @@ function getIp() {
  */
 function readConfig(){
   try {
-    rawdata = fs.readFileSync('./www/config.txt');
+    rawdata = fs.readFileSync(PLAYER_CONFIG_PATH);
     configData = JSON.parse(rawdata);
     vfk = configData.vfk;
     k = configData.k;
@@ -145,7 +151,7 @@ function downloadMedia() {
     for (i = 0; i < items.length; i++) {
       console.log(items[i].image);
       fileName = getFileName(items[i].image);
-      download(items[i].image, './www/media/' + fileName, postDownload);
+      download(items[i].image, PLAYER_MEDIA_PATH + fileName, postDownload);
     }
   });
 }
@@ -158,7 +164,7 @@ function downloadMedia() {
  */
 function readMediaList() {
   try {
-    rawdata = fs.readFileSync('./www/medialist.txt','utf8');
+    rawdata = fs.readFileSync(PLAYER_MEDIALIST_PATH,'utf8');
     mediaList = rawdata.split('\n');
     return mediaList;
   } catch (e) {
@@ -188,7 +194,7 @@ function postDownload(file){
   mediaList = readMediaList();
   if(!mediaList.includes(fileName)){
     console.log('not present')
-    fs.appendFileSync('./www/medialist.txt', fileName + '\n');
+    fs.appendFileSync(PLAYER_MEDIALIST_PATH, fileName + '\n');
   }
   else{
     console.log('exists')
