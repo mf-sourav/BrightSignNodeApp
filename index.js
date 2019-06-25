@@ -21,8 +21,9 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var jsonParser = bodyParser.json();
 var http = require('http');
 const request = require('request');
+const fsExtra = require('fs-extra');
 //insteo api
-var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&'
+var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&';
 var vfk = '';
 var k = '';
 //player config
@@ -80,6 +81,16 @@ app.post('/updateConfig',jsonParser, function (req, res) {
   res.send(configData);
 });
 
+//
+app.get('/clearMedia', function (req, res) {
+  try {
+    clearData();
+    res.send('cleared');
+  } catch (error) {
+    res.send('err');
+  }
+});
+
 /**
  *  @function getIp
  *  @summary
@@ -104,7 +115,7 @@ function readConfig(){
     k = configData.k;
     console.log(configData);
   } catch (e) {
-    console.log('fs err')
+    console.log('fs err');
   }
 }
 
@@ -197,6 +208,12 @@ function postDownload(file){
     fs.appendFileSync(PLAYER_MEDIALIST_PATH, fileName + '\n');
   }
   else{
-    console.log('exists')
+    console.log('exists');
   }
+}
+
+//
+function clearData() {
+  fs.writeFileSync(PLAYER_MEDIALIST_PATH, '');
+  fsExtra.emptyDirSync(PLAYER_MEDIA_PATH);
 }

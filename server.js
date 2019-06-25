@@ -16,10 +16,11 @@ var urlencodedParser = bodyParser.urlencoded({
 })
 var jsonParser = bodyParser.json();
 const request = require('request');
+const fsExtra = require('fs-extra');
 
 function readConfig() {
   try {
-    rawdata = fs.readFileSync( process.env.PLAYER_CONFIG_PATH);
+    rawdata = fs.readFileSync(process.env.PLAYER_CONFIG_PATH);
     configData = JSON.parse(rawdata);
     vfk = configData.vfk;
     k = configData.k;
@@ -52,6 +53,15 @@ app.get('/getConfig', function (req, res) {
 app.get('/getMedia', function (req, res) {
   downloadMedia();
   res.send(readMediaList());
+});
+
+app.get('/clearMedia', function (req, res) {
+  try {
+    clearData();
+    res.send('cleared');
+  } catch (error) {
+    res.send('err');
+  }
 });
 
 app.post('/updateConfig', jsonParser, function (req, res) {
@@ -109,4 +119,9 @@ function postDownload(file) {
   } else {
     console.log('exists')
   }
+}
+
+function clearData() {
+  fs.writeFileSync(process.env.PLAYER_MEDIALIST_PATH, '');
+  fsExtra.emptyDirSync(process.env.PLAYER_MEDIA_PATH);
 }

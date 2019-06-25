@@ -16,6 +16,7 @@ var gallery = null;
 var mediaListArray = [];
 var mediaCounter = 0;
 var mediaTimer = null;
+var errMsg = null;
 /**
  *  @function init
  *  @summary
@@ -27,11 +28,11 @@ function init() {
   console.log('init');
   setModal();
   openModalListner();
-
+  //dom elemnts init
   iframe = document.getElementById('ifr');
   gallery = document.getElementById('gallery');
   document.getElementById('gallery-video').addEventListener('ended', videoEndHandler, false);
-
+  errMsg = document.getElementById("modalErr");
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
@@ -49,7 +50,6 @@ function init() {
           gallery.style.display = "block";
           setTimeout(getMediaList);
           setInterval(function () {
-            clearTimeout(mediaTimer);
             getMediaList();
           }, 300000);
           //getMediaList();
@@ -79,14 +79,14 @@ function checkPin() {
       if (newPassword.length >= 5) {
         configData.pass = newPassword;
       }else{
-        document.getElementById("modalErr").innerHTML = "invalid new password/leave blank to use old";
+        errMsg.innerHTML = "invalid new password/leave blank to use old";
         return false;
       }
     }
     changeScreenUrl();
   } else {
     document.getElementById("pass").value = '';
-    document.getElementById("modalErr").innerHTML = "wrong password";
+    errMsg.innerHTML = "wrong password";
   }
 }
 
@@ -101,22 +101,22 @@ function changeScreenUrl() {
   //validations
   var screenUrl = document.getElementById("screenid").value;
   if (screenUrl == '') {
-    document.getElementById("modalErr").innerHTML = "screen id cant be empty";
+    errMsg.innerHTML = "screen id cant be empty";
     return false;
   }
   var vfk = document.getElementById("vfkid").value;
   if (vfk == '') {
-    document.getElementById("modalErr").innerHTML = "vfk cant be empty";
+    errMsg.innerHTML = "vfk cant be empty";
     return false;
   }
   var k = document.getElementById("kid").value;
   if (k == '') {
-    document.getElementById("modalErr").innerHTML = "vfk cant be empty";
+    errMsg.innerHTML = "vfk cant be empty";
     return false;
   }
   var mode = document.querySelector('input[name="mode"]:checked').value;
   if (mode == '') {
-    document.getElementById("modalErr").innerHTML = "mode cant be empty";
+    errMsg.innerHTML = "mode cant be empty";
     return false;
   }
 
@@ -208,6 +208,7 @@ function getMediaList() {
         document.querySelector("#loading").style.display = 'none';
         document.querySelector("#gallery-video").src = "";
         document.querySelector("#gallery-image").src = ""
+        clearTimeout(mediaTimer);
         nextMedia();
       } else {
         setTimeout(getMediaList, 10000);
@@ -250,13 +251,12 @@ function getmediaExtension(filename) {
   return filename.split('.').pop();
 }
 
-//fter video over
+//after video over
 function videoEndHandler(e) {
-  // What you want to do after the event
   mediaCounter++;
   nextMedia();
 }
-
+//press ctrl+c to open config panel
 function openModalListner() {
   document.addEventListener('keydown', function (event) {
     if (event.ctrlKey && event.key === 'c') {
@@ -264,4 +264,24 @@ function openModalListner() {
       openModal();
     }
   });
+}
+
+function clearMedia(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      //mediaListArray = JSON.parse(this.responseText);
+      console.log(this.responseText);
+      if (this.responseText == 'cleared') {
+        errMsg.innerHTML = "cleared all data system will reboot";
+        setTimeout(function(){
+          window.location.reload();
+        },3000);
+      } else {
+        errMsg.innerHTML = "error couldn't delete";
+      }
+    }
+  };
+  xhttp.open("GET", localHostAddress + "clearMedia", true);
+  xhttp.send();
 }
