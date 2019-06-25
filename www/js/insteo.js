@@ -83,7 +83,7 @@ function checkPin() {
         return false;
       }
     }
-    changeScreenUrl();
+    updateConfig();
   } else {
     document.getElementById("pass").value = '';
     errMsg.innerHTML = "wrong password";
@@ -91,13 +91,14 @@ function checkPin() {
 }
 
 /**
- *  @function changeScreenUrl
+ *  @function updateConfig
  *  @summary
+ *    validates config fields
  *    changes screen url id appends to iframe
- *    requests no derver to rewrite config file with new URL
+ *    requests node server to rewrite config file with new config
  *  @returns void
  */
-function changeScreenUrl() {
+function updateConfig() {
   //validations
   var screenUrl = document.getElementById("screenid").value;
   if (screenUrl == '') {
@@ -166,7 +167,13 @@ setTimeout(init, 3000);
 //resize events  connection
 window.onresize = resizeWindow;
 window.onload = resizeWindow;
-//modal
+
+/**
+ *  @function setModal
+ *  @summary
+ *    sets the modal
+ *  @returns void
+ */
 function setModal() {
   // Get the modal
   modal = document.getElementById("configModal");
@@ -196,7 +203,14 @@ function closeModal() {
   modal.style.display = "none";
 }
 
-//get media list
+/**
+ *  @function getMediaList
+ *  @method GET
+ *  @summary
+ *    gets the list of all the downloaded media files
+ *    starts animation
+ *  @returns void
+ */
 function getMediaList() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
@@ -219,9 +233,14 @@ function getMediaList() {
   xhttp.send();
 }
 
-//show media item
+/**
+ *  @function nextMedia
+ *  @summary
+ *    checks the media item type img/vid
+ *    sets the media item to view in respective html element
+ *  @returns void
+ */
 function nextMedia() {
-
   if (mediaCounter >= mediaListArray.length) {
     mediaCounter = 0;
   }
@@ -242,7 +261,6 @@ function nextMedia() {
     document.querySelector("#gallery-video").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-image").src = ""
   }
-
   mediaCounter++;
 }
 
@@ -266,12 +284,18 @@ function openModalListner() {
   });
 }
 
+/**
+ *  @function clearMedia
+ *  @method GET
+ *  @summary
+ *    requests the node server to delete all media files
+ *    reloads the app after 3secs
+ *  @returns void
+ */
 function clearMedia(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      //mediaListArray = JSON.parse(this.responseText);
-      console.log(this.responseText);
       if (this.responseText == 'cleared') {
         errMsg.innerHTML = "cleared all data system will reboot";
         setTimeout(function(){
