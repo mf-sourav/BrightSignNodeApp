@@ -94,7 +94,7 @@ function checkPin() {
  *  @function updateConfig
  *  @summary
  *    validates config fields
- *    changes screen url id appends to iframe
+ *    changes screen url link appends to iframe
  *    requests node server to rewrite config file with new config
  *  @returns void
  */
@@ -245,21 +245,23 @@ function nextMedia() {
     mediaCounter = 0;
   }
   ext = getmediaExtension(mediaListArray[mediaCounter]);
-  if (ext == '') {
-    mediaCounter++;
-    nextMedia();
-    return false
-  }
-  if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif') {
+
+  if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif' || ext == 'svg' || ext == 'bmp') {
     //gallery.innerHTML = "<img src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-image").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-video").src = "";
     mediaTimer = setTimeout(nextMedia, 10000);
   }
-  if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
+  else if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
     //gallery.innerHTML = "<video width='1920px' autoplay src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-video").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-image").src = ""
+  }
+  else {
+    mediaCounter++;
+    console.log(ext+" unsupported format");
+    nextMedia();
+    return false;
   }
   mediaCounter++;
 }

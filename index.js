@@ -20,6 +20,7 @@ const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const jsonParser = bodyParser.json();
 const http = require('http');
+const https = require('https');
 const request = require('request');
 const fsExtra = require('fs-extra');
 //insteo api
@@ -127,14 +128,24 @@ function readConfig(){
  *  @callback postDownload
  *  @returns void
  */
-function download(url, dest, cb) {
+var download = function (url, dest, cb) {
   var file = fs.createWriteStream(dest);
-  var request = http.get(url, function(response) {
-    response.pipe(file);
-    file.on('finish', function() {
-      file.close(cb(dest));
+  var protocol = url.split('://');
+  if(protocol[0] == 'http'){
+    var request = http.get(url, function (response) {
+      response.pipe(file);
+      file.on('finish', function () {
+        file.close(cb(dest)); // close() is async, call cb after close completes.
+      });
     });
-  });
+  }else{
+    var request = https.get(url, function (response) {
+      response.pipe(file);
+      file.on('finish', function () {
+        file.close(cb(dest)); // close() is async, call cb after close completes.
+      });
+    });
+  }
 }
 
 /**
