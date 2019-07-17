@@ -24,14 +24,15 @@ var https = require('https');
 const request = require('request');
 const fsExtra = require('fs-extra');
 //insteo api
-var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&';
-var vfk = '';
-var k = '';
+const mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&';
+const vfk = '';
+const k = '';
 //player config
 const PLAYER_PORT = 9090;
 const PLAYER_CONFIG_PATH = './www/config.txt';
 const PLAYER_MEDIA_PATH = './www/media/';
 const PLAYER_MEDIALIST_PATH = './www/medialist.txt';
+
 /**
  *  @function main
  *  @summary
@@ -120,10 +121,6 @@ function readConfig(){
   }
 }
 
-//passing methods to html entry point
-window.main = main;
-window.getIp = getIp;
-
 /**
  *  @function download
  *  @summary
@@ -131,7 +128,7 @@ window.getIp = getIp;
  *  @callback postDownload
  *  @returns void
  */
-function download(url, dest, cb) {
+var download = function (url, dest, cb) {
   var file = fs.createWriteStream(dest);
   var protocol = url.split('://');
   if(protocol[0] == 'http'){
@@ -224,8 +221,18 @@ function postDownload(file){
   }
 }
 
-//
+/**
+ *  @function clearData
+ *  @summary
+ *   deletes all media files in the directory
+ *   erases medialist
+ *  @returns void
+ */
 function clearData() {
   fs.writeFileSync(PLAYER_MEDIALIST_PATH, '');
   fsExtra.emptyDirSync(PLAYER_MEDIA_PATH);
 }
+
+//passing methods to html entry point
+window.main = main;
+window.getIp = getIp;

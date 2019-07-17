@@ -83,7 +83,7 @@ function checkPin() {
         return false;
       }
     }
-    changeScreenUrl();
+    updateConfig();
   } else {
     document.getElementById("pass").value = '';
     errMsg.innerHTML = "wrong password";
@@ -91,13 +91,14 @@ function checkPin() {
 }
 
 /**
- *  @function changeScreenUrl
+ *  @function updateConfig
  *  @summary
- *    changes screen url id appends to iframe
- *    requests no derver to rewrite config file with new URL
+ *    validates config fields
+ *    changes screen url link appends to iframe
+ *    requests node server to rewrite config file with new config
  *  @returns void
  */
-function changeScreenUrl() {
+function updateConfig() {
   //validations
   var screenUrl = document.getElementById("screenid").value;
   if (screenUrl == '') {
@@ -166,7 +167,13 @@ setTimeout(init, 3000);
 //resize events  connection
 window.onresize = resizeWindow;
 window.onload = resizeWindow;
-//modal
+
+/**
+ *  @function setModal
+ *  @summary
+ *    sets the modal
+ *  @returns void
+ */
 function setModal() {
   // Get the modal
   modal = document.getElementById("configModal");
@@ -234,7 +241,6 @@ function getMediaList() {
  *  @returns void
  */
 function nextMedia() {
-
   if (mediaCounter >= mediaListArray.length) {
     mediaCounter = 0;
   }
@@ -250,7 +256,7 @@ function nextMedia() {
     document.querySelector("#gallery-video").src = "";
     mediaTimer = setTimeout(nextMedia, 10000);
   }
-  if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
+  else if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
     //gallery.innerHTML = "<video width='1920px' autoplay src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-video").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-image").src = ""
@@ -289,8 +295,6 @@ function clearMedia(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      //mediaListArray = JSON.parse(this.responseText);
-      console.log(this.responseText);
       if (this.responseText == 'cleared') {
         errMsg.innerHTML = "cleared all data system will reboot";
         setTimeout(function(){
