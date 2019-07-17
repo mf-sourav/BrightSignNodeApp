@@ -20,6 +20,7 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var jsonParser = bodyParser.json();
 var http = require('http');
+var https = require('https');
 const request = require('request');
 const fsExtra = require('fs-extra');
 //insteo api
@@ -132,12 +133,23 @@ window.getIp = getIp;
  */
 function download(url, dest, cb) {
   var file = fs.createWriteStream(dest);
-  var request = http.get(url, function(response) {
-    response.pipe(file);
-    file.on('finish', function() {
-      file.close(cb(dest));
+  var protocol = url.split('://');
+  if(protocol[0] == 'http'){
+    var request = http.get(url, function(response) {
+      response.pipe(file);
+      file.on('finish', function() {
+        file.close(cb(dest));
+      });
     });
-  });
+  }else{
+    var request = https.get(url, function(response) {
+      response.pipe(file);
+      file.on('finish', function() {
+        file.close(cb(dest));
+      });
+    });
+  }
+
 }
 
 /**

@@ -190,13 +190,20 @@ function setModal() {
 //open modal
 function openModal() {
   modal.style.display = "block";
+  getCurrentConfig();
 }
 //closes modal
 function closeModal() {
   modal.style.display = "none";
 }
 
-//get media list
+/**
+ *  @function getMediaList
+ *  @summary
+ *    gets the list of media that are downloaded & present in sdcard
+ *    starts carousel if media present else tries to fetch list after some time
+ *  @returns void
+ */
 function getMediaList() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
@@ -219,7 +226,13 @@ function getMediaList() {
   xhttp.send();
 }
 
-//show media item
+/**
+ *  @function nextMedia
+ *  @summary
+ *    regulates the carousel function in player
+ *    checks the type of media & puts in respective element
+ *  @returns void
+ */
 function nextMedia() {
 
   if (mediaCounter >= mediaListArray.length) {
@@ -229,7 +242,7 @@ function nextMedia() {
   if (ext == '') {
     mediaCounter++;
     nextMedia();
-    return false
+    return false;
   }
   if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif') {
     //gallery.innerHTML = "<img src='media/" + mediaListArray[mediaCounter] + "' />";
@@ -242,7 +255,6 @@ function nextMedia() {
     document.querySelector("#gallery-video").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-image").src = ""
   }
-
   mediaCounter++;
 }
 
@@ -256,6 +268,7 @@ function videoEndHandler(e) {
   mediaCounter++;
   nextMedia();
 }
+
 //press ctrl+c to open config panel
 function openModalListner() {
   document.addEventListener('keydown', function (event) {
@@ -266,6 +279,12 @@ function openModalListner() {
   });
 }
 
+/**
+ *  @function clearMedia
+ *  @summary
+ *    instructs the local node server to clear media files
+ *  @returns void
+ */
 function clearMedia(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
@@ -284,4 +303,21 @@ function clearMedia(){
   };
   xhttp.open("GET", localHostAddress + "clearMedia", true);
   xhttp.send();
+}
+
+/**
+ *  @function getCurrentConfig
+ *  @summary
+ *    shows present app configuration when config panel is opened
+ *  @returns void
+ */
+function getCurrentConfig(){
+  document.getElementById("screenid").value = configData.screen;
+  document.getElementById("vfkid").value = configData.vfk;
+  document.getElementById("kid").value = configData.k;
+  if(configData.mode == "screen"){
+    document.getElementById("mode1").checked = true;
+  }else{
+    document.getElementById("mode2").checked = true;
+  }
 }

@@ -2,6 +2,7 @@ require('dotenv').config();
 var express = require('express');
 var app = express();
 var http = require('http');
+var https = require('https');
 app.use(express.static('www'));
 const fs = require('fs');
 var configData = null;
@@ -71,14 +72,25 @@ app.post('/updateConfig', jsonParser, function (req, res) {
   res.send(configData);
 });
 
-var download = function (url, dest, cb) {
+function download(url, dest, cb) {
   var file = fs.createWriteStream(dest);
-  var request = http.get(url, function (response) {
-    response.pipe(file);
-    file.on('finish', function () {
-      file.close(cb(dest)); // close() is async, call cb after close completes.
+  var protocol = url.split('://');
+  if(protocol[0] == 'http'){
+    var request = http.get(url, function(response) {
+      response.pipe(file);
+      file.on('finish', function() {
+        file.close(cb(dest));
+      });
     });
-  });
+  }else{
+    var request = https.get(url, function(response) {
+      response.pipe(file);
+      file.on('finish', function() {
+        file.close(cb(dest));
+      });
+    });
+  }
+
 }
 
 function downloadMedia() {
