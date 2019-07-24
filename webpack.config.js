@@ -7,7 +7,7 @@ module.exports = {
   output: {
     publicPath: './',
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist/node-server')
   },
 
   target: 'node',

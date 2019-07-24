@@ -13,13 +13,14 @@ Function Node_Initialize(msgPort As Object, userVariables As Object, bsp as Obje
   nc = CreateObject("roNetworkConfiguration", 0)
   nc.SetHostName("brightsign-sfn-server")
   nc.Apply()
-
-  nodePackage = createObject("roBrightPackage", bsp.assetPoolFiles.getPoolFilePath("node-server.zip"))
-  CreateDirectory("node-server")
-  nodePackage.Unpack("node-server/")
-  wwwPackage = createObject("roBrightPackage", bsp.assetPoolFiles.getPoolFilePath("www.zip"))
-  CreateDirectory("www")
-  wwwPackage.Unpack("www/")
+  
+  'ListDir("./")
+  'nodePackage = createObject("roBrightPackage", bsp.assetPoolFiles.getPoolFilePath("node-server.zip"))
+  'CreateDirectory("node-server")
+  'nodePackage.Unpack("node-server/")
+  'wwwPackage = createObject("roBrightPackage", bsp.assetPoolFiles.getPoolFilePath("www.zip"))
+  'CreateDirectory("www")
+  'wwwPackage.Unpack("www/")
 
   url$ = "file:///sd:/node-server/node-server.html"
 
@@ -32,7 +33,7 @@ Function Node_Initialize(msgPort As Object, userVariables As Object, bsp as Obje
       url: url$
 	}
 	h.htmlWidget = CreateObject("roHtmlWidget", htmlRect, config)
-  h.htmlWidget.Show()
+  	h.htmlWidget.Show()
 	return h
 
 End Function

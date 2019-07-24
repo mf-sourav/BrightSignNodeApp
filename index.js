@@ -24,9 +24,9 @@ var https = require('https');
 const request = require('request');
 const fsExtra = require('fs-extra');
 //insteo api
-const mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&';
-const vfk = '';
-const k = '';
+var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&';
+var vfk = '';
+var k = '';
 //player config
 const PLAYER_PORT = 9090;
 const PLAYER_CONFIG_PATH = './www/config.txt';
@@ -100,7 +100,12 @@ app.get('/clearMedia', function (req, res) {
  *  @returns ipaddress
  */
 function getIp() {
-  return networkInterfaces.eth0[0].address;
+  try {
+    return networkInterfaces.eth0[0].address;
+  } catch (error) {
+    return networkInterfaces.lo[0].address;
+  }
+
 }
 
 /**

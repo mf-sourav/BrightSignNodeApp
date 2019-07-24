@@ -51,7 +51,7 @@ function init() {
           setTimeout(getMediaList);
           setInterval(function () {
             getMediaList();
-          }, 300000);
+          }, 120000);
           //getMediaList();
         } else {
           openModal();

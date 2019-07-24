@@ -94,7 +94,8 @@ function download(url, dest, cb) {
 }
 
 function downloadMedia() {
-  request(mediaApiUrl + 'vfk=' + vfk + '&k=' + k + '&count=300&ran=466&time=' + Math.floor(Date.now() / 1000), (err, res, body) => {
+  url =mediaApiUrl + 'vfk=' + vfk + '&k=' + k + '&count=300&ran=466&time=' + Math.floor(Date.now() / 1000);
+  request(url, (err, res, body) => {
     if (err) {
       return console.log('offline');
     }
