@@ -50,6 +50,10 @@ function main() {
   });
 }
 
+app.get('/getIp', function (req, res) {
+  res.send(getIp());
+});
+
 /**
  *  @route /getConfig
  *  @method GET

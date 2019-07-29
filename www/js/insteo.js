@@ -33,6 +33,7 @@ function init() {
   gallery = document.getElementById('gallery');
   document.getElementById('gallery-video').addEventListener('ended', videoEndHandler, false);
   errMsg = document.getElementById("modalErr");
+  ipTest = document.getElementById("ipTest");
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
@@ -52,6 +53,9 @@ function init() {
           setInterval(function () {
             getMediaList();
           }, 120000);
+          setInterval(function(){
+            isAlive();
+          },5000)
           //getMediaList();
         } else {
           openModal();
@@ -140,7 +144,11 @@ function updateConfig() {
     if (this.readyState == 4 && this.status == 200) {
       //document.getElementById("demo").innerHTML = this.responseText;
       console.log(this.responseText);
-      closeModal();
+      errMsg.innerHTML = "config saved system will reboot";
+        setTimeout(function(){
+          window.location.reload();
+          closeModal();
+        },3000);
     }
   };
   xhttp.open("POST", localHostAddress + "updateConfig", true);
@@ -324,4 +332,28 @@ function getCurrentConfig(){
   }else{
     document.getElementById("mode2").checked = true;
   }
+}
+
+/**
+ *  @function clearMedia
+ *  @summary
+ *    instructs the local node server to clear media files
+ *  @returns void
+ */
+function isAlive(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText);
+      ipTest.innerHTML = this.responseText;
+    }
+  };
+  xhttp.addEventListener("error", connectionDead);
+  xhttp.open("GET", localHostAddress + "getIp", true);
+  xhttp.send();
+}
+
+function connectionDead(){
+  console.log(localHostAddress);
+  window.location='http://127.0.0.1:9090/';
 }

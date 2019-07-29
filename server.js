@@ -4,7 +4,9 @@ var app = express();
 var http = require('http');
 var https = require('https');
 app.use(express.static('www'));
-const fs = require('fs');
+var os = require('os');
+var fs = require('fs');
+var networkInterfaces = os.networkInterfaces();
 var configData = null;
 var bodyParser = require('body-parser');
 var mediaApiUrl = process.env.PLAYER_MEDIA_URL;
@@ -18,6 +20,10 @@ var urlencodedParser = bodyParser.urlencoded({
 var jsonParser = bodyParser.json();
 const request = require('request');
 const fsExtra = require('fs-extra');
+
+function getIp() {
+  return '127.0.0.1';
+}
 
 function readConfig() {
   try {
@@ -44,6 +50,10 @@ function readMediaList() {
 app.listen(process.env.PLAYER_PORT, function () {
   console.log('Example app listening on port 9090!');
   readConfig();
+});
+
+app.get('/getIp', function (req, res) {
+  res.send(getIp());
 });
 
 app.get('/getConfig', function (req, res) {
