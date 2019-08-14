@@ -17,7 +17,9 @@ var fs = require('fs');
 var networkInterfaces = os.networkInterfaces();
 var configData = null;
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({
+  extended: false
+});
 var jsonParser = bodyParser.json();
 var http = require('http');
 var https = require('https');
@@ -27,6 +29,7 @@ const fsExtra = require('fs-extra');
 var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppContentList?type=JSON&';
 var vfk = '';
 var k = '';
+var currMediaListLength = 0;
 //player config
 const PLAYER_PORT = 9090;
 const PLAYER_CONFIG_PATH = './www/config.txt';
@@ -79,7 +82,7 @@ app.get('/getMedia', function (req, res) {
  *  @method POST
  *  @returns config data
  */
-app.post('/updateConfig',jsonParser, function (req, res) {
+app.post('/updateConfig', jsonParser, function (req, res) {
   console.log(req.body);
   fs.writeFileSync(PLAYER_CONFIG_PATH, JSON.stringify(req.body));
   readConfig();
@@ -118,7 +121,7 @@ function getIp() {
  *   reads config.txt
  *  @returns config data
  */
-function readConfig(){
+function readConfig() {
   try {
     rawdata = fs.readFileSync(PLAYER_CONFIG_PATH);
     configData = JSON.parse(rawdata);
@@ -140,17 +143,17 @@ function readConfig(){
 var download = function (url, dest, cb) {
   var file = fs.createWriteStream(dest);
   var protocol = url.split('://');
-  if(protocol[0] == 'http'){
-    var request = http.get(url, function(response) {
+  if (protocol[0] == 'http') {
+    var request = http.get(url, function (response) {
       response.pipe(file);
-      file.on('finish', function() {
+      file.on('finish', function () {
         file.close(cb(dest));
       });
     });
-  }else{
-    var request = https.get(url, function(response) {
+  } else {
+    var request = https.get(url, function (response) {
       response.pipe(file);
-      file.on('finish', function() {
+      file.on('finish', function () {
         file.close(cb(dest));
       });
     });
@@ -174,6 +177,13 @@ function downloadMedia() {
       data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
       data = JSON.parse(data);
       items = data[0].results;
+      //check if new response
+      console.log('currmedialen:'+currMediaListLength);
+      console.log('newmedialen:'+items.length);
+      if(currMediaListLength-1 != items.length){
+        //resets the media list
+        fs.writeFileSync(PLAYER_MEDIALIST_PATH, '');
+      }
     } catch (e) {
       console.log('api error');
     }
@@ -193,8 +203,9 @@ function downloadMedia() {
  */
 function readMediaList() {
   try {
-    rawdata = fs.readFileSync(PLAYER_MEDIALIST_PATH,'utf8');
+    rawdata = fs.readFileSync(PLAYER_MEDIALIST_PATH, 'utf8');
     mediaList = rawdata.split('\n');
+    currMediaListLength = mediaList.length;
     return mediaList;
   } catch (e) {
     return 'err';
@@ -218,14 +229,13 @@ function getFileName(url) {
  *   checks if file has already been downloaded
  *  @returns filename
  */
-function postDownload(file){
+function postDownload(file) {
   fileName = getFileName(file);
   mediaList = readMediaList();
-  if(!mediaList.includes(fileName)){
+  if (!mediaList.includes(fileName)) {
     console.log('not present')
     fs.appendFileSync(PLAYER_MEDIALIST_PATH, fileName + '\n');
-  }
-  else{
+  } else {
     console.log('exists');
   }
 }

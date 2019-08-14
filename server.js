@@ -10,6 +10,7 @@ var networkInterfaces = os.networkInterfaces();
 var configData = null;
 var bodyParser = require('body-parser');
 var mediaApiUrl = process.env.PLAYER_MEDIA_URL;
+var currMediaListLength = 0;
 //var vfk = 'c7d93938-a5bf-41';
 //var k = 'c84345d2-146e-4b';
 var vfk = '';
@@ -41,6 +42,7 @@ function readMediaList() {
   try {
     rawdata = fs.readFileSync(process.env.PLAYER_MEDIALIST_PATH, 'utf8');
     mediaList = rawdata.split('\n');
+    currMediaListLength = mediaList.length;
     return mediaList;
   } catch (e) {
     return 'err';
@@ -114,6 +116,13 @@ function downloadMedia() {
       data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
       data = JSON.parse(data);
       items = data[0].results;
+      //check if new response
+      console.log('currmedialen:'+currMediaListLength);
+      console.log('newmedialen:'+items.length);
+      if(currMediaListLength-1 != items.length){
+        //resets the media list
+        fs.writeFileSync(process.env.PLAYER_MEDIALIST_PATH, '');
+      }
     } catch (e) {
       return false;
     }

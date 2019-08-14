@@ -53,9 +53,9 @@ function init() {
           setInterval(function () {
             getMediaList();
           }, 120000);
-          setInterval(function(){
+          setInterval(function () {
             isAlive();
-          },5000)
+          }, 5000)
           //getMediaList();
         } else {
           openModal();
@@ -79,10 +79,10 @@ function checkPin() {
   var newPassword = document.getElementById("newpass").value;
   if (password == configData.pass) {
     //check for new pass
-    if(newPassword != ''){
+    if (newPassword != '') {
       if (newPassword.length >= 5) {
         configData.pass = newPassword;
-      }else{
+      } else {
         errMsg.innerHTML = "invalid new password/leave blank to use old";
         return false;
       }
@@ -145,10 +145,10 @@ function updateConfig() {
       //document.getElementById("demo").innerHTML = this.responseText;
       console.log(this.responseText);
       errMsg.innerHTML = "config saved system will reboot";
-        setTimeout(function(){
-          window.location.reload();
-          closeModal();
-        },3000);
+      setTimeout(function () {
+        window.location.reload();
+        closeModal();
+      }, 3000);
     }
   };
   xhttp.open("POST", localHostAddress + "updateConfig", true);
@@ -223,7 +223,18 @@ function getMediaList() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      mediaListArray = JSON.parse(this.responseText);
+      data = JSON.parse(this.responseText);
+      //check if new data is present then get new data
+      if (mediaListArray.length > 1) {
+        if (data.length != mediaListArray.length) {
+          if (data.length > mediaListArray.length) {
+            window.location.reload();
+          }else{
+            clearMedia();
+          }
+        }
+      }
+      mediaListArray = data;
       console.log(mediaListArray);
       if (mediaListArray.length > 1) {
         //gallery.innerHTML = "";
@@ -249,7 +260,7 @@ function getMediaList() {
  *  @returns void
  */
 function nextMedia() {
-  if (mediaCounter >= mediaListArray.length) {
+  if (mediaCounter >= mediaListArray.length - 1) {
     mediaCounter = 0;
   }
   ext = getmediaExtension(mediaListArray[mediaCounter]);
@@ -263,8 +274,7 @@ function nextMedia() {
     document.querySelector("#gallery-image").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-video").src = "";
     mediaTimer = setTimeout(nextMedia, 10000);
-  }
-  else if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
+  } else if (ext == 'mp4' || ext == 'webm' || ext == 'ogg') {
     //gallery.innerHTML = "<video width='1920px' autoplay src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-video").src = "media/" + mediaListArray[mediaCounter];
     document.querySelector("#gallery-image").src = ""
@@ -299,15 +309,15 @@ function openModalListner() {
  *    instructs the local node server to clear media files
  *  @returns void
  */
-function clearMedia(){
+function clearMedia() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       if (this.responseText == 'cleared') {
         errMsg.innerHTML = "cleared all data system will reboot";
-        setTimeout(function(){
+        setTimeout(function () {
           window.location.reload();
-        },3000);
+        }, 3000);
       } else {
         errMsg.innerHTML = "error couldn't delete";
       }
@@ -323,13 +333,13 @@ function clearMedia(){
  *    shows present app configuration when config panel is opened
  *  @returns void
  */
-function getCurrentConfig(){
+function getCurrentConfig() {
   document.getElementById("screenid").value = configData.screen;
   document.getElementById("vfkid").value = configData.vfk;
   document.getElementById("kid").value = configData.k;
-  if(configData.mode == "screen"){
+  if (configData.mode == "screen") {
     document.getElementById("mode1").checked = true;
-  }else{
+  } else {
     document.getElementById("mode2").checked = true;
   }
 }
@@ -340,7 +350,7 @@ function getCurrentConfig(){
  *    instructs the local node server to clear media files
  *  @returns void
  */
-function isAlive(){
+function isAlive() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
@@ -353,7 +363,7 @@ function isAlive(){
   xhttp.send();
 }
 
-function connectionDead(){
+function connectionDead() {
   console.log(localHostAddress);
-  window.location='http://127.0.0.1:9090/';
+  window.location = 'http://127.0.0.1:9090/';
 }
