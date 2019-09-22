@@ -30,6 +30,7 @@ var mediaApiUrl = 'https://api-cloud.insteo.com/api/1/AppService.svc/GetAppConte
 var vfk = '';
 var k = '';
 var currMediaListLength = 0;
+var currMediaList = [];
 //player config
 const PLAYER_PORT = 9090;
 const PLAYER_CONFIG_PATH = './www/config.txt';
@@ -172,7 +173,7 @@ function downloadMedia() {
     if (err) {
       return console.log('offline');
     }
-    console.log(body);
+    //console.log(body);
     try {
       data = body.replace(/\(|\)/g, "").replace(/\)|\)/g, "");
       data = JSON.parse(data);
@@ -180,7 +181,7 @@ function downloadMedia() {
       //check if new response
       console.log('currmedialen:'+currMediaListLength);
       console.log('newmedialen:'+items.length);
-      if(currMediaListLength-1 != items.length){
+      if (currMediaListLength - 1 > items.length) {
         //resets the media list
         fs.writeFileSync(PLAYER_MEDIALIST_PATH, '');
       }
@@ -188,9 +189,15 @@ function downloadMedia() {
       console.log('api error');
     }
     for (i = 0; i < items.length; i++) {
-      console.log(items[i].image);
       fileName = getFileName(items[i].image);
-      download(items[i].image, PLAYER_MEDIA_PATH + fileName, postDownload);
+      mediaList = readMediaList();
+      if (!mediaList.includes(fileName)) {
+        console.log('download checker: not present-'+items[i].image);
+        download(items[i].image,PLAYER_MEDIA_PATH + fileName, postDownload);
+      } else {
+        console.log('download checker:exists-'+items[i].image)
+      }
+      //download(items[i].image, process.env.PLAYER_MEDIA_PATH + fileName, postDownload);
     }
   });
 }
@@ -205,6 +212,7 @@ function readMediaList() {
   try {
     rawdata = fs.readFileSync(PLAYER_MEDIALIST_PATH, 'utf8');
     mediaList = rawdata.split('\n');
+    currMediaList = mediaList;
     currMediaListLength = mediaList.length;
     return mediaList;
   } catch (e) {
@@ -252,6 +260,31 @@ function clearData() {
   fsExtra.emptyDirSync(PLAYER_MEDIA_PATH);
 }
 
+
+function garbageCollector() {
+  mediaPresent = []
+  fs.readdirSync(PLAYER_MEDIA_PATH).forEach(file => {
+    mediaPresent.push(file);
+  });
+  console.log(mediaPresent);
+  console.log(currMediaList);
+  for(i=0;i<mediaPresent.length;i++){
+    if(!isInArray(mediaPresent[i], currMediaList)) {
+      try {
+        fsExtra.removeSync(PLAYER_MEDIA_PATH + mediaPresent[i]);
+        //file removed
+      } catch(err) {
+        console.error(err);
+      }
+    }
+  }
+}
+
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
+}
+
+setInterval(garbageCollector,120000);
 //passing methods to html entry point
 window.main = main;
 window.getIp = getIp;

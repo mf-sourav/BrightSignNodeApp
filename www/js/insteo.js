@@ -52,7 +52,7 @@ function init() {
           setTimeout(getMediaList);
           setInterval(function () {
             getMediaList();
-          }, 120000);
+          }, 60000);
           setInterval(function () {
             isAlive();
           }, 5000)
@@ -269,6 +269,7 @@ function nextMedia() {
     nextMedia();
     return false;
   }
+  ext = ext.toLowerCase();
   if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif') {
     //gallery.innerHTML = "<img src='media/" + mediaListArray[mediaCounter] + "' />";
     document.querySelector("#gallery-image").src = "media/" + mediaListArray[mediaCounter];
